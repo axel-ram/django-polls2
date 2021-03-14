@@ -4,10 +4,10 @@ from django.urls import reverse
 from django.views import generic
 from django.utils import timezone
 from django.contrib.auth.models import User
-from .models import Choice, Question
+from .models import Choice, Question, Comment
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-
+from .forms import CommentForm
 class IndexView(generic.ListView):
     template_name = 'polls/index.html'
     context_object_name = 'latest_question_list'
@@ -66,4 +66,21 @@ class UsersView(LoginRequiredMixin, generic.ListView):
         context['staff'] = [user for user in User.objects.all() if user.is_staff]
         context['non_staff'] = [user for user in User.objects.all() if not user.is_staff]
         return context
+
+class CreateCommentView(generic.edit.CreateView):
+    model = Comment
+    form_class = CommentForm
+    # fields = ['question', 'author', 'text', 'created_date']
     
+    
+    def get_success_url(self):
+        return reverse("polls:detail", kwargs={
+            "pk": self.object.question.id
+        })
+    
+    def get_form_kwargs(self):
+        kwargs = super(CreateCommentView, self).get_form_kwargs()
+        
+        kwargs['question_pk'] = self.kwargs['pk']
+        print(kwargs)
+        return kwargs

@@ -33,3 +33,10 @@ class Profile(models.Model):
     bio = models.CharField(default="Please add profile:", max_length=100)
     def __str__(self):
         return self.user.username
+
+class Comment(models.Model):
+    #many to one -> foreign key is used
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    author = models.CharField(max_length=200)
+    text = models.TextField()
+    created_date = models.DateTimeField(default=timezone.now)
