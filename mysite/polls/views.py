@@ -5,7 +5,8 @@ from django.views import generic
 from django.utils import timezone
 from django.contrib.auth.models import User
 from .models import Choice, Question
-
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 class IndexView(generic.ListView):
     template_name = 'polls/index.html'
@@ -36,7 +37,7 @@ class ResultsView(generic.DetailView):
     model = Question
     template_name = 'polls/results.html'
 
-
+@login_required
 def vote(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
     try:
@@ -55,9 +56,10 @@ def vote(request, question_id):
         # user hits the Back button.
         return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
 
-class UsersView(generic.ListView):
+class UsersView(LoginRequiredMixin, generic.ListView):
     model = User
     template_name = "polls/users.html"
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
