@@ -1,1 +1,1 @@
-#Django learning
+# Django learning
