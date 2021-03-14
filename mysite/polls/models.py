@@ -30,3 +30,6 @@ class Choice(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    bio = models.CharField(default="Please add profile:", max_length=100)
+    def __str__(self):
+        return self.user.username
