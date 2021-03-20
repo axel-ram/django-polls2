@@ -3,6 +3,8 @@ import datetime
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 class Question(models.Model):
     question_text = models.CharField(max_length=200)
@@ -33,6 +35,12 @@ class Profile(models.Model):
     bio = models.CharField(default="Please add profile:", max_length=100)
     def __str__(self):
         return self.user.username
+
+@receiver(post_save, sender=User)
+def create_and_save_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+
 
 class Comment(models.Model):
     #many to one -> foreign key is used

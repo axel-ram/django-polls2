@@ -82,5 +82,4 @@ class CreateCommentView(generic.edit.CreateView):
         kwargs = super(CreateCommentView, self).get_form_kwargs()
         
         kwargs['question_pk'] = self.kwargs['pk']
-        print(kwargs)
         return kwargs
